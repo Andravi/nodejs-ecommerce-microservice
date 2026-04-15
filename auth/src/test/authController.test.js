@@ -69,6 +69,7 @@
 //     it("should return an error for an incorrect password", async () => {
 //       const res = await chai
 //         .request(app.app)
+//         .request(app.app)
 //         .post("/login")
 //         .send({ username: "testuser", password: "wrongpassword" });
 
