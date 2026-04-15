@@ -1,0 +1,157 @@
+
+> nodejs-ecommerce-microservice@1.0.0 test /home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice
+> mocha --timeout 20000 --recursive --exclude '**/node_modules/**' '**/*.test.js' --exit
+
+
+
+  AuthController Unit Tests
+    1) UT-01: Deve falhar ao registrar sem username
+    2) UT-01: Deve falhar ao registrar sem password
+Username already taken
+    ✔ UT-02: Deve impedir registro com username duplicado
+    ✔ UT-03: Deve falhar login com senha incorreta
+    ✔ UT-04: Deve falhar login com usuário inexistente
+
+  Auth Middleware
+    ✔ UT-08: Deve rejeitar token expirado
+
+  ProductController Unit Tests
+MongooseError: Operation `products.find()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:185:23)
+    at listOnTimeout (internal/timers.js:557:17)
+    at processTimers (internal/timers.js:500:7)
+    3) UT-07: Deve falhar ao criar pedido com lista vazia
+    ✔ UT-09: Deve gerar UUIDs diferentes
+    4) UT-10: Deve armazenar pedido no Map
+
+  Product Model Tests
+    ✔ UT-05: Deve falhar ao criar produto sem nome e preço
+    ✔ UT-06: Deve falhar com preço negativo
+
+  E2E TESTS - ECOMMERCE MICROSERVICES
+    E2E-01: Rotas protegidas com token válido
+      ✔ não deve retornar 401 (1043ms)
+    E2E-02: Rotas protegidas sem token
+      ✔ todas devem retornar 401
+    E2E-03: 100 pedidos simultâneos
+      ✔ deve criar 100 pedidos concorrentes (1285ms)
+    E2E-04: Segurança - usuário não pode agir por outro
+      5) deve rejeitar requisição com username diferente do token
+
+  INTEGRATION TESTS - ECOMMERCE MICROSERVICES
+    IT-01: Dashboard sem token
+      ✔ deve retornar 401
+    IT-02: Listagem de produtos sem autenticação
+      ✔ deve retornar 401
+    IT-03: Listagem com autenticação válida
+      6) deve retornar 200 e array
+    IT-04: Criação de produto
+      7) deve criar produto com sucesso
+    IT-05: Username extremamente longo
+      ✔ deve falhar com username > 1000 caracteres
+    IT-06: Consulta de status de pedido
+      ✔ deve criar pedido
+      8) deve consultar status do pedido
+    IT-07: Timeout sem RabbitMQ
+      9) deve retornar timeout quando broker não responde
+
+
+  14 passing (34s)
+  9 failing
+
+  1) AuthController Unit Tests
+       UT-01: Deve falhar ao registrar sem username:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/auth_unit_ChatGPT.test.js:37:45)
+
+  2) AuthController Unit Tests
+       UT-01: Deve falhar ao registrar sem password:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/auth_unit_ChatGPT.test.js:45:45)
+
+  3) ProductController Unit Tests
+       UT-07: Deve falhar ao criar pedido com lista vazia:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (product/src/test/product_controller_unit_ChatGPT.test.js:31:45)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  4) ProductController Unit Tests
+       UT-10: Deve armazenar pedido no Map:
+     Error: Timeout of 20000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/src/test/product_controller_unit_ChatGPT.test.js)
+      at listOnTimeout (internal/timers.js:557:17)
+      at processTimers (internal/timers.js:500:7)
+
+  5) E2E TESTS - ECOMMERCE MICROSERVICES
+       E2E-04: Segurança - usuário não pode agir por outro
+         deve rejeitar requisição com username diferente do token:
+     AssertionError: expected [ 400, 403 ] to include 201
+      at Context.<anonymous> (tests/eccommecer_e2e_ChatGPT.test.js:194:29)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  6) INTEGRATION TESTS - ECOMMERCE MICROSERVICES
+       IT-03: Listagem com autenticação válida
+         deve retornar 200 e array:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 401
+      + expected - actual
+
+      -401
+      +200
+      
+      at Context.<anonymous> (tests/eccommecer_integration_ChatGPT.test.js:59:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  7) INTEGRATION TESTS - ECOMMERCE MICROSERVICES
+       IT-04: Criação de produto
+         deve criar produto com sucesso:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 201 but got 401
+      + expected - actual
+
+      -401
+      +201
+      
+      at Context.<anonymous> (tests/eccommecer_integration_ChatGPT.test.js:84:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  8) INTEGRATION TESTS - ECOMMERCE MICROSERVICES
+       IT-06: Consulta de status de pedido
+         deve consultar status do pedido:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
+      + expected - actual
+
+      -404
+      +200
+      
+      at Context.<anonymous> (tests/eccommecer_integration_ChatGPT.test.js:131:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  9) INTEGRATION TESTS - ECOMMERCE MICROSERVICES
+       IT-07: Timeout sem RabbitMQ
+         deve retornar timeout quando broker não responde:
+     AssertionError: expected [ 408, 504 ] to include 401
+      at Context.<anonymous> (tests/eccommecer_integration_ChatGPT.test.js:152:29)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+
+
+npm ERR! Test failed.  See above for more details.
