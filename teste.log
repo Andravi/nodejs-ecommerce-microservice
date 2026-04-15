@@ -1,0 +1,388 @@
+
+> nodejs-ecommerce-microservice@1.0.0 test /home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice
+> mocha --timeout 20000 --recursive --exclude '**/node_modules/**' '**/*.test.js' --exit
+
+
+
+  UT-01: Registro de usuário com campos obrigatórios ausentes
+    1) deve retornar erro 400 quando username está ausente
+    2) deve retornar erro 400 quando password está ausente
+    3) deve retornar erro 400 quando ambos campos estão ausentes
+
+  UT-02: Registro com nome de usuário duplicado
+Username already taken
+    ✔ deve retornar erro 400 quando username já existe
+Username already taken
+    ✔ não deve chamar register do service quando usuário já existe
+
+  UT-03: Login com senha incorreta
+    ✔ deve retornar erro 400 quando senha está incorreta
+    ✔ não deve retornar token quando senha está incorreta
+
+  UT-04: Login com usuário inexistente
+    ✔ deve retornar erro 400 quando usuário não existe
+
+  Product Controller - Testes Unitários
+    UT-07: Criação de pedido com lista vazia de produtos
+MongooseError: Operation `products.find()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:185:23)
+    at listOnTimeout (internal/timers.js:557:17)
+    at processTimers (internal/timers.js:500:7)
+      4) deve retornar erro 400 quando lista de produtos está vazia
+MongooseError: Operation `products.find()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:185:23)
+    at listOnTimeout (internal/timers.js:557:17)
+    at processTimers (internal/timers.js:500:7)
+      5) deve retornar erro 400 quando ids não é fornecido
+MongooseError: Operation `products.find()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:185:23)
+    at listOnTimeout (internal/timers.js:557:17)
+    at processTimers (internal/timers.js:500:7)
+      ✔ não deve chamar messageBroker quando lista está vazia (10004ms)
+    UT-09: Geração única de identificador de pedido
+      ✔ deve gerar UUID válido para cada pedido
+      ✔ deve gerar IDs diferentes para pedidos diferentes
+      6) deve usar uuid.v4() para gerar IDs
+    UT-10: Armazenamento do pedido em memória (Map interno)
+      7) deve inserir pedido no Map com status pending
+      ✔ deve atualizar status do pedido no Map quando order é completada
+      8) deve manter os dados do usuário corretamente no Map
+      9) deve armazenar múltiplos pedidos no Map
+
+  Products
+Connecting to RabbitMQ...
+Connecting to RabbitMQ...
+MongoDB connected
+undefined
+MongoDB connected
+    10) "before all" hook in "Products"
+MongoDB disconnected
+
+  Testes de Integração - E-commerce Microservices
+    IT-01: Acesso ao dashboard sem token
+      ✔ deve retornar 401 quando acessar /auth/dashboard sem token
+      11) deve retornar 401 quando token é inválido
+      12) deve retornar 401 quando token está expirado
+    IT-02: Listagem de produtos sem autenticação
+      ✔ deve retornar 401 quando acessar /products/api/products sem token
+      ✔ deve retornar 401 com token inválido
+    IT-03: Listagem de produtos com autenticação válida
+      ✔ deve retornar 200 e array de produtos com token válido
+      ✔ deve retornar estrutura correta quando existem produtos
+    IT-04: Criação de produto com autenticação válida
+      ✔ deve criar produto e retornar 201 com dados corretos
+      ✔ deve retornar 400 quando nome do produto está ausente
+      ✔ deve retornar 400 quando preço do produto está ausente
+      13) deve retornar 400 quando preço é negativo
+    IT-05: Registro com nome de usuário extremamente longo
+      ✔ deve retornar 400 quando username tem mais de 100 caracteres
+      ✔ deve retornar 400 quando username tem mais de 1000 caracteres
+      ✔ deve aceitar username com 50 caracteres (dentro do limite)
+    IT-06: Consulta de status de pedido
+      ✔ deve criar pedido e retornar orderId (1011ms)
+⚠️ Rota GET /products/orders/:orderId não está implementada
+      14) deve consultar status do pedido com sucesso
+      ✔ deve retornar 404 para orderId inexistente
+    IT-07: Tempo limite do long polling na criação de pedido
+      ✔ deve processar pedido dentro do tempo limite quando RabbitMQ está funcionando (1009ms)
+      15) deve retornar dados completos do pedido após processamento
+
+  Testes de Integração - Fluxo Completo de Compra
+✅ Pedido 5abbef0a-5da6-49b8-9028-168d1716eeb7 criado com sucesso - Total: R$ 60.00
+    ✔ Fluxo completo: Criar produtos → Comprar → Verificar pedido (1043ms)
+    ✔ Deve calcular corretamente o valor total do pedido (1010ms)
+
+  Testes de Integração - API Gateway Routing
+    ✔ deve rotear requisições /auth/* para o serviço auth (153ms)
+    ✔ deve rotear requisições /products/* para o serviço product
+    ✔ deve rotear requisições /orders/* para o serviço order
+
+  Testes de Integração - Validação de Dados
+    ✔ deve rejeitar produto com preço zero
+    ✔ deve rejeitar pedido com ID de produto inexistente
+
+  Testes End-to-End (E2E) - E-commerce Microservices
+🚀 Iniciando setup dos testes E2E...
+✅ Usuário criado: e2e_user_1776262703996_ls16ut
+✅ Produtos criados: 3
+✅ Setup concluído. Iniciando testes...
+
+    E2E-01: Validação de autenticação em todas as rotas protegidas (com token válido)
+  Testando: GET /auth/dashboard
+  Testando: GET /products/api/products
+  Testando: POST /products/api/products
+  Testando: POST /products/api/products/buy
+
+📊 Resultados E2E-01:
+  ✅ GET /auth/dashboard - Status: 200
+  ✅ GET /products/api/products - Status: 200
+  ✅ POST /products/api/products - Status: 201
+  ✅ POST /products/api/products/buy - Status: 201
+      ✔ deve acessar todas as rotas protegidas com token válido (1047ms)
+      ✔ deve retornar dados corretos no dashboard
+      ✔ deve listar produtos corretamente
+    E2E-02: Validação de bloqueio em todas as rotas sem autenticação
+  Testando: GET /auth/dashboard (sem token)
+  Testando: GET /products/api/products (sem token)
+  Testando: POST /products/api/products (sem token)
+  Testando: POST /products/api/products/buy (sem token)
+
+📊 Resultados E2E-02:
+  ✅ GET /auth/dashboard - Status: 401
+  ✅ GET /products/api/products - Status: 401
+  ✅ POST /products/api/products - Status: 401
+  ✅ POST /products/api/products/buy - Status: 401
+      ✔ deve bloquear todas as rotas protegidas sem token
+      ✔ deve retornar 401 para dashboard sem token
+      ✔ deve retornar 401 para listagem de produtos sem token
+    E2E-03: Criação de 100 pedidos simultâneos
+
+📦 Preparando 100 usuários e produtos para teste concorrente...
+Failed to connect to RabbitMQ: getaddrinfo ENOTFOUND rabbitmq
+Failed to connect to RabbitMQ: getaddrinfo ENOTFOUND rabbitmq
+✅ 100 usuários criados e autenticados
+✅ Produto compartilhado criado: 69df9e46f6ab1d2daac8168f
+
+⏱️ Tempo total para 100 pedidos: 1326ms
+📈 Média: 13.26ms por pedido
+
+✅ Pedidos com sucesso: 100
+❌ Pedidos com falha: 0
+
+🔑 OrderIds únicos gerados: 100
+
+📋 Pedidos encontrados na API de consulta: 0/100
+
+✅ Todos os 100 pedidos têm dados consistentes
+      ✔ deve criar 100 pedidos simultaneamente sem perda de dados (1735ms)
+      ✔ deve verificar que não houve corrupção no mapa interno (1008ms)
+    E2E-04: Criar pedido com token válido mas username diferente do informado no corpo
+
+🔐 Preparando usuários para teste de segurança...
+✅ Usuário A: userA_1776262729223_fab4x5
+✅ Usuário B: userB_1776262729444_6jbsss
+✅ Produto ID: 69df9e49f6ab1d2daac816f6
+
+📡 Resposta do servidor: Status 201
+📝 Mensagem: Sem mensagem
+      16) deve rejeitar pedido quando username no corpo não corresponde ao token
+      ✔ não deve criar pedido no sistema quando username não confere (1014ms)
+
+✅ Pedido legítimo criado: e7c47920-679b-4cdb-a00b-b23eabcffcda para userA_1776262729223_fab4x5
+      ✔ deve permitir pedido normal sem username no corpo (usando token) (1009ms)
+⚠️ AVISO: Sistema permitiu usurpação! Isso é uma falha de segurança.
+      17) deve rejeitar pedido com username diferente mesmo quando é admin (se houver role)
+
+✅ Usuário B criou pedido legítimo: 1c6caefd-d169-4d08-b8ae-b5247619df37
+      ✔ deve funcionar corretamente para o usuário B com seu próprio token (1010ms)
+
+  Testes E2E - Cenários de Borda e Resiliência
+    18) deve lidar corretamente com pedido de produto inexistente
+    19) deve lidar corretamente com pedido de lista vazia
+    ✔ deve lidar corretamente com token mal formatado
+    20) deve lidar corretamente com token expirado
+
+
+  42 passing (2m)
+  20 failing
+
+  1) UT-01: Registro de usuário com campos obrigatórios ausentes
+       deve retornar erro 400 quando username está ausente:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/auth_DeepseekTestes.test.js:35:45)
+
+  2) UT-01: Registro de usuário com campos obrigatórios ausentes
+       deve retornar erro 400 quando password está ausente:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/auth_DeepseekTestes.test.js:51:45)
+
+  3) UT-01: Registro de usuário com campos obrigatórios ausentes
+       deve retornar erro 400 quando ambos campos estão ausentes:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/auth_DeepseekTestes.test.js:66:45)
+
+  4) Product Controller - Testes Unitários
+       UT-07: Criação de pedido com lista vazia de produtos
+         deve retornar erro 400 quando lista de produtos está vazia:
+
+      AssertionError: expected 'Server error' to equal 'Lista de produtos não pode estar vazia'
+      + expected - actual
+
+      -Server error
+      +Lista de produtos não pode estar vazia
+      
+      at Context.<anonymous> (product/src/test/product_DeepseekTestes.test.js:49:34)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  5) Product Controller - Testes Unitários
+       UT-07: Criação de pedido com lista vazia de produtos
+         deve retornar erro 400 quando ids não é fornecido:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (product/src/test/product_DeepseekTestes.test.js:62:47)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  6) Product Controller - Testes Unitários
+       UT-09: Geração única de identificador de pedido
+         deve usar uuid.v4() para gerar IDs:
+     TypeError: Descriptor for property v4 is non-configurable and non-writable
+      at assertValidPropertyDescriptor (product/node_modules/sinon/lib/sinon/stub.js:138:15)
+      at Function.stub (product/node_modules/sinon/lib/sinon/stub.js:89:5)
+      at Sandbox.stub (product/node_modules/sinon/lib/sinon/sandbox.js:389:39)
+      at Context.<anonymous> (product/src/test/product_DeepseekTestes.test.js:105:32)
+      at processImmediate (internal/timers.js:464:21)
+
+  7) Product Controller - Testes Unitários
+       UT-10: Armazenamento do pedido em memória (Map interno)
+         deve inserir pedido no Map com status pending:
+     Error: Timeout of 20000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/src/test/product_DeepseekTestes.test.js)
+      at listOnTimeout (internal/timers.js:557:17)
+      at processTimers (internal/timers.js:500:7)
+
+  8) Product Controller - Testes Unitários
+       UT-10: Armazenamento do pedido em memória (Map interno)
+         deve manter os dados do usuário corretamente no Map:
+     Error: Timeout of 20000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/src/test/product_DeepseekTestes.test.js)
+      at listOnTimeout (internal/timers.js:557:17)
+      at processTimers (internal/timers.js:500:7)
+
+  9) Product Controller - Testes Unitários
+       UT-10: Armazenamento do pedido em memória (Map interno)
+         deve armazenar múltiplos pedidos no Map:
+     Error: Timeout of 20000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/src/test/product_DeepseekTestes.test.js)
+      at listOnTimeout (internal/timers.js:557:17)
+      at processTimers (internal/timers.js:500:7)
+
+  10) Products
+       "before all" hook in "Products":
+     Error: getaddrinfo ENOTFOUND auth
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:71:26)
+
+  11) Testes de Integração - E-commerce Microservices
+       IT-01: Acesso ao dashboard sem token
+         deve retornar 401 quando token é inválido:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 400
+      + expected - actual
+
+      -400
+      +401
+      
+      at Context.<anonymous> (tests/eccomercer.test.js:80:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  12) Testes de Integração - E-commerce Microservices
+       IT-01: Acesso ao dashboard sem token
+         deve retornar 401 quando token está expirado:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 401 but got 400
+      + expected - actual
+
+      -400
+      +401
+      
+      at Context.<anonymous> (tests/eccomercer.test.js:99:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  13) Testes de Integração - E-commerce Microservices
+       IT-04: Criação de produto com autenticação válida
+         deve retornar 400 quando preço é negativo:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 400 but got 201
+      + expected - actual
+
+      -201
+      +400
+      
+      at Context.<anonymous> (tests/eccomercer.test.js:261:27)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  14) Testes de Integração - E-commerce Microservices
+       IT-06: Consulta de status de pedido
+         deve consultar status do pedido com sucesso:
+     AssertionError: Rota GET /products/orders/:orderId não foi implementada no Product Controller
+      at Context.<anonymous> (tests/eccomercer.test.js:387:16)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  15) Testes de Integração - E-commerce Microservices
+       IT-07: Tempo limite do long polling na criação de pedido
+         deve retornar dados completos do pedido após processamento:
+     AssertionError: expected { status: 'completed', …(3) } to have property 'username'
+      at Context.<anonymous> (tests/eccomercer.test.js:470:32)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  16) Testes End-to-End (E2E) - E-commerce Microservices
+       E2E-04: Criar pedido com token válido mas username diferente do informado no corpo
+         deve rejeitar pedido quando username no corpo não corresponde ao token:
+     AssertionError: expected 201 to be one of [ 400, 403, 401 ]
+      at Context.<anonymous> (tests/eccommecer_e2e.test.js:567:32)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  17) Testes End-to-End (E2E) - E-commerce Microservices
+       E2E-04: Criar pedido com token válido mas username diferente do informado no corpo
+         deve rejeitar pedido com username diferente mesmo quando é admin (se houver role):
+     AssertionError: Sistema permitiu criar pedido em nome de outro usuário
+      at Context.<anonymous> (tests/eccommecer_e2e.test.js:665:16)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  18) Testes E2E - Cenários de Borda e Resiliência
+       deve lidar corretamente com pedido de produto inexistente:
+     AssertionError: expected 500 to be one of [ 400, 404 ]
+      at Context.<anonymous> (tests/eccommecer_e2e.test.js:725:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  19) Testes E2E - Cenários de Borda e Resiliência
+       deve lidar corretamente com pedido de lista vazia:
+
+      AssertionError: expected 201 to equal 400
+      + expected - actual
+
+      -201
+      +400
+      
+      at Context.<anonymous> (tests/eccommecer_e2e.test.js:739:27)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  20) Testes E2E - Cenários de Borda e Resiliência
+       deve lidar corretamente com token expirado:
+
+      AssertionError: expected 400 to equal 401
+      + expected - actual
+
+      -400
+      +401
+      
+      at Context.<anonymous> (tests/eccommecer_e2e.test.js:763:27)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+
+
+npm ERR! Test failed.  See above for more details.
