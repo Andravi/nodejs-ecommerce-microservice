@@ -5,8 +5,8 @@ const AuthService = require("../services/authService");
  */
 
 class AuthController {
-  constructor() {
-    this.authService = new AuthService();
+  constructor(authService = null) {
+    this.authService = authService || new AuthService();
   }
 
   async login(req, res) {
@@ -23,15 +23,17 @@ class AuthController {
 
   async register(req, res) {
     const user = req.body;
-  
+
     try {
-      const existingUser = await this.authService.findUserByUsername(user.username);
-  
+      const existingUser = await this.authService.findUserByUsername(
+        user.username,
+      );
+
       if (existingUser) {
-        console.log("Username already taken")
+        console.log("Username already taken");
         throw new Error("Username already taken");
       }
-  
+
       const result = await this.authService.register(user);
       res.json(result);
     } catch (err) {
