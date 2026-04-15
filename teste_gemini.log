@@ -1,0 +1,142 @@
+
+> nodejs-ecommerce-microservice@1.0.0 test /home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice
+> mocha --timeout 20000 --recursive --exclude '**/node_modules/**' '**/*.test.js' --exit
+
+
+
+  Testes de Integração: Segurança e Listagem
+    ✔ IT-01: Acesso ao dashboard sem token deve retornar 401
+    ✔ IT-02: Listagem de produtos sem autenticação deve retornar 401
+    ✔ IT-03: Listagem de produtos com autenticação válida
+
+  Testes de Integração: Produtos e Validação de Limites
+    ✔ IT-04: Criação de produto com autenticação válida e verificação em banco
+    ✔ IT-05: Registro com nome de usuário extremamente longo (>1000 chars)
+
+  Auth Unit Tests
+    UT-01: Registro com campos ausentes
+      1) deve retornar 400 se o username estiver ausente
+      2) deve retornar 400 se o password estiver ausente
+    UT-02: Registro com usuário duplicado
+Username already taken
+      ✔ deve retornar 400 se findUserByUsername encontrar alguém
+    UT-03 & UT-04: Falhas no Login
+      ✔ UT-03: deve retornar 400 para senha incorreta
+      ✔ UT-04: deve retornar 400 para usuário inexistente
+
+  UT-08: JWT Middleware Expiration
+    ✔ deve rejeitar token expirado
+
+  Product Model Unit Tests
+    ✔ UT-05: deve falhar na validação se campos obrigatórios faltarem
+    ✔ UT-06: deve rejeitar preço negativo
+
+  Testes de Integração: Fluxo de Pedidos e Timeout
+    3) IT-06: Fluxo completo de criação e consulta de status de pedido
+    4) IT-07: Simulação de Timeout no Long Polling (RabbitMQ Offline)
+
+  Product Controller & Orders Logic
+MongooseError: Operation `products.find()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (/home/andravi/Área de trabalho/CPET Praticas/TCC/nodejs-ecommerce-microservice/product/node_modules/mongoose/lib/drivers/node-mongodb-native/collection.js:185:23)
+    at listOnTimeout (internal/timers.js:557:17)
+    at processTimers (internal/timers.js:500:7)
+    5) UT-07: deve retornar 400 se a lista de IDs de produtos estiver vazia
+No RabbitMQ channel available.
+    6) UT-09 & UT-10: Verificação de UUID e Map Interno
+No RabbitMQ channel available.
+
+  Suíte de Testes E2E - Sistema de E-commerce
+    E2E-01 & E2E-02: Fluxo de Autenticação Global
+      ✔ E2E-01: Deve permitir acesso com token válido em todas as rotas (1040ms)
+      ✔ E2E-02: Deve bloquear acesso (401) sem token em todas as rotas
+    E2E-03: Stress Test - 100 Pedidos Simultâneos
+      ✔ Deve processar 100 compras concorrentes sem perda de dados (5379ms)
+    E2E-04: Segurança de Identidade (Cross-User Check)
+      7) Deve rejeitar se o username no corpo não condiz com o dono do token
+
+
+  14 passing (20s)
+  7 failing
+
+  1) Auth Unit Tests
+       UT-01: Registro com campos ausentes
+         deve retornar 400 se o username estiver ausente:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/authController_Gemini.test.js:37:47)
+
+  2) Auth Unit Tests
+       UT-01: Registro com campos ausentes
+         deve retornar 400 se o password estiver ausente:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (auth/src/test/authController_Gemini.test.js:43:47)
+
+  3) Testes de Integração: Fluxo de Pedidos e Timeout
+       IT-06: Fluxo completo de criação e consulta de status de pedido:
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 200 but got 404
+      + expected - actual
+
+      -404
+      +200
+      
+      at Context.<anonymous> (product/src/test/product_integration_Gemini.test.js:48:31)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  4) Testes de Integração: Fluxo de Pedidos e Timeout
+       IT-07: Simulação de Timeout no Long Polling (RabbitMQ Offline):
+
+      AssertionError: expected { Object (_events, _eventsCount, ...) } to have status code 500 but got 201
+      + expected - actual
+
+      -201
+      +500
+      
+      at Context.<anonymous> (product/src/test/product_integration_Gemini.test.js:63:25)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  5) Product Controller & Orders Logic
+       UT-07: deve retornar 400 se a lista de IDs de produtos estiver vazia:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (product/src/test/productControler_Gemini.test.js:23:45)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+  6) Product Controller & Orders Logic
+       UT-09 & UT-10: Verificação de UUID e Map Interno:
+
+      AssertionError: expected +0 to equal 1
+      + expected - actual
+
+      -0
+      +1
+      
+      at Context.<anonymous> (product/src/test/productControler_Gemini.test.js:41:49)
+      at processImmediate (internal/timers.js:464:21)
+
+  7) Suíte de Testes E2E - Sistema de E-commerce
+       E2E-04: Segurança de Identidade (Cross-User Check)
+         Deve rejeitar se o username no corpo não condiz com o dono do token:
+     AssertionError: expected 201 to be one of [ 400, 403 ]
+      at Context.<anonymous> (tests/eccommecer_e2e_Gemini.test.js:138:32)
+      at processTicksAndRejections (internal/process/task_queues.js:95:5)
+
+
+
+npm ERR! Test failed.  See above for more details.
