@@ -1,6 +1,11 @@
+const chai = require("chai");
 const { expect } = require("chai");
 const sinon = require("sinon");
 const AuthController = require("../../src/controllers/authController");
+
+const chaiHttp = require("chai-http");
+chai.use(chaiHttp);
+const GATEWAY_URL = "http://localhost:3003";
 
 describe("Auth Unit Tests", () => {
   let authController;
