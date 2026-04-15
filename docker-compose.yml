@@ -1,14 +1,47 @@
 version: "3.8"
 
 services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ecommerce
+
   auth:
     build: ./auth
     ports:
       - "3000:3000"
+    depends_on:
+      - mongodb
+      - rabbitmq
     env_file:
       - ./auth/.env
     networks:
       - ecommerce
+
+   # Serviço para testes do auth
+  test-auth:
+    build: ./auth
+    command: npm test
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - NODE_ENV=test
+      - MONGO_URI=mongodb://mongodb:27017/auth_test_db
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - JWT_SECRET=supersecretkeychangeThisToAStrongRandomString123!@#
+      - PORT=3000
+    env_file:
+      - ./auth/.env
+    networks:
+      - ecommerce
+    profiles:
+      - test
 
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -28,6 +61,7 @@ services:
       - "3002:3002"
     depends_on:
       - rabbitmq
+      - mongodb
     environment:
       - RABBITMQ_URL=amqp://rabbitmq:5672
     env_file:
@@ -41,6 +75,7 @@ services:
       - "3001:3001"
     depends_on:
       - rabbitmq
+      - mongodb
     environment:
       - RABBITMQ_URL=amqp://rabbitmq:5672
     env_file:
@@ -59,3 +94,7 @@ services:
 
 networks:
   ecommerce:
+    driver: bridge
+
+volumes:
+  mongodb_data:
