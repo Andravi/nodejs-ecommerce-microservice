@@ -14,11 +14,12 @@ describe("Products", () => {
     app = new App();
     await Promise.all([app.connectDB(), app.setupMessageBroker()])
 
+    console.log(process.env.LOGIN_TEST_USER);
     // Authenticate with the auth microservice to get a token
-    const authRes = await chai
-      .request("http://localhost:3000")
-      .post("/login")
-      .send({ username: process.env.LOGIN_TEST_USER, password: process.env.LOGIN_TEST_PASSWORD });
+    const authRes = await chai.request("http://auth:3000").post("/login").send({
+      username: process.env.LOGIN_TEST_USER,
+      password: process.env.LOGIN_TEST_PASSWORD,
+    });
 
     authToken = authRes.body.token;
     console.log(authToken);

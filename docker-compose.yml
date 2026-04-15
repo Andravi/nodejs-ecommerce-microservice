@@ -24,20 +24,58 @@ services:
       - ecommerce
 
    # Serviço para testes do auth
-  test-auth:
+  test-auth2:
     build: ./auth
-    command: npm test
+    command: sh -c "npm install && npm install --save-dev chai@4.3.7 chai-http@4.3.0 mocha@10.2.0 && cat package.json && npm test"
     depends_on:
       - mongodb
       - rabbitmq
     environment:
-      - NODE_ENV=test
-      - MONGO_URI=mongodb://mongodb:27017/auth_test_db
-      - RABBITMQ_URL=amqp://rabbitmq:5672
-      - JWT_SECRET=supersecretkeychangeThisToAStrongRandomString123!@#
-      - PORT=3000
-    env_file:
-      - ./auth/.env
+      - NODE_ENV=./.env
+    networks:
+      - ecommerce
+    profiles:
+      - test
+  
+  test-product:
+    build: ./product
+    command: sh -c "npm install && npm install --save-dev chai@4.3.7 chai-http@4.3.0 mocha@10.2.0 && cat package.json && npm test"
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - NODE_ENV=./.env
+    networks:
+      - ecommerce
+    profiles:
+      - test
+
+  # Serviço para testes do order
+  test-order:
+    build: ./order
+    command: sh -c "npm install && npm install --save-dev chai@4.3.7 chai-http@4.3.0 mocha@10.2.0 && cat package.json && npm test"
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - NODE_ENV=./.env
+    networks:
+      - ecommerce
+    profiles:
+      - test
+
+  # Serviço para testes do api-gateway
+  test-api-gateway:
+    build: ./api-gateway
+    command: sh -c "npm install && npm install --save-dev chai@4.3.7 chai-http@4.3.0 mocha@10.2.0 && cat package.json && npm test"
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - auth
+      - product
+      - order
+    environment:
+      - NODE_ENV=./.env
     networks:
       - ecommerce
     profiles:
